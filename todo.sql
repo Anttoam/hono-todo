@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY,
+  name VARCHAR(50) NOT NULL
+);
+
+INSERT INTO users VALUES (1,'山田 太郎');
+INSERT INTO users VALUES (2,'鈴木 花子');
