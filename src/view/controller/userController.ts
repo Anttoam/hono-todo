@@ -12,4 +12,13 @@ export class UserController {
     const result = await this.usecase.register(name, email)
     return c.json(result)
   }
+
+  public async getUserByEmail(c: Context)  {
+    const email = c.req.query('email');
+
+    if (!email) return c.text('メールアドレスが存在しません', 400)
+
+    const result = await this.usecase.getUserByEmail(email)
+    return c.json(result)
+  }
 }

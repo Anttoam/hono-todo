@@ -8,4 +8,8 @@ export class UserUsecase {
     const newUser = new User(null, name, email)
     return await this.ur.insert(newUser);
   }
+
+  public async getUserByEmail(email: string) {
+    return await this.ur.getByEmail(email)
+  }
 }
