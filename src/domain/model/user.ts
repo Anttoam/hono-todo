@@ -1,7 +1,7 @@
 export class User {
-  constructor(
-    public readonly id: number | null, 
-    public readonly name: string, 
-    public readonly email: string
-  ) {}
+	constructor(
+		public readonly id: number | null,
+		public readonly name: string,
+		public readonly email: string,
+	) {}
 }
