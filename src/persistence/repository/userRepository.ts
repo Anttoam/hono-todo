@@ -36,4 +36,21 @@ export class UserRepository {
 
     return result
   }
+
+  public async getById(id: number): Promise<User> {
+    const [row] = await this.db
+     .select()
+     .from(users)
+     .where(eq(users.id, id))
+     .limit(1)
+
+    if (!row) throw new Error("ユーザーが存在しません");
+
+    return {
+      id: row.id, 
+      name: row.name, 
+      email: row.email
+    }
+  }
+
 }

@@ -37,5 +37,10 @@ userRoutes.get("/", (c) => {
   return controller.getUsers(c);
 });
 
+userRoutes.get("/:id", (c) => {
+  const controller = c.get("userController");
+  return controller.getUserByID(c);
+});
+
 
 export default userRoutes;

@@ -26,4 +26,14 @@ export class UserController {
     const result = await this.usecase.getUsers()
     return c.json(result)
   }
+
+  public async getUserByID(c: Context) {
+    const idParam = c.req.param('id')
+
+    const id = parseInt(idParam, 10)
+    if (isNaN(id)) return c.text('IDが不正です', 400)
+
+    const result = await this.usecase.getUserByID(id)
+    return c.json(result)
+  }
 }

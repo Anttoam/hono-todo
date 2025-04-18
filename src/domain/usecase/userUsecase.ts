@@ -16,4 +16,8 @@ export class UserUsecase {
   public async getUsers() {
     return await this.ur.getUsers()
   }
+
+  public async getUserByID(id: number) {
+    return await this.ur.getById(id)
+  }
 }
