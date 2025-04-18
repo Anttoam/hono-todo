@@ -5,4 +5,5 @@ export const users = sqliteTable("users", {
 	name: text("name").notNull(),
 	email: text("email").notNull(),
 });
+export type NewUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;

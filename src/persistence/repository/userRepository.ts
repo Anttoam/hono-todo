@@ -1,12 +1,11 @@
 import { eq } from "drizzle-orm";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
-import type { User } from "../../domain/model/user";
-import { users } from "../drizzle/schema";
+import { NewUser, type User, users } from "../drizzle/schema";
 
 export class UserRepository {
 	constructor(private readonly db: DrizzleD1Database) {}
 
-	public async insert(user: User) {
+	public async insert(user: NewUser) {
 		return this.db.insert(users).values({
 			name: user.name,
 			email: user.email,
