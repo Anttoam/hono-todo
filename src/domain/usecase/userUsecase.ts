@@ -12,4 +12,8 @@ export class UserUsecase {
   public async getUserByEmail(email: string) {
     return await this.ur.getByEmail(email)
   }
+
+  public async getUsers() {
+    return await this.ur.getUsers()
+  }
 }

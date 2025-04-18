@@ -32,5 +32,10 @@ userRoutes.get("/email", (c) => {
   return controller.getUserByEmail(c);
 });
 
+userRoutes.get("/", (c) => {
+  const controller = c.get("userController");
+  return controller.getUsers(c);
+});
+
 
 export default userRoutes;

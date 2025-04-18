@@ -21,4 +21,9 @@ export class UserController {
     const result = await this.usecase.getUserByEmail(email)
     return c.json(result)
   }
+
+  public async getUsers(c: Context)  {
+    const result = await this.usecase.getUsers()
+    return c.json(result)
+  }
 }

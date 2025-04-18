@@ -28,4 +28,12 @@ export class UserRepository {
       email: row.email,
     };
   }
+
+  public async getUsers(): Promise<User[]> {
+    const result = await this.db.select().from(users)
+
+    if (result.length == 0) throw new Error('ユーザーが存在しません');
+
+    return result
+  }
 }
