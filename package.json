@@ -2,7 +2,8 @@
   "name": "hono-todo",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy --minify"
+    "deploy": "wrangler deploy --minify",
+    "migrate": "wrangler d1 execute todo --file=misc/migrations/todo.sql --local"
   },
   "dependencies": {
     "dotenv": "^16.5.0",

@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "hono-todo",
-  "main": "src/index.ts",
+  "main": "src/main.ts",
   "compatibility_date": "2025-04-16", 
   "dev": {
     "ip": "0.0.0.0", 
@@ -30,7 +30,7 @@
        "binding": "DB",
        "database_name": "todo",
        "database_id": "1", 
-       "migrations_dir": "drizzle"
+       "migrations_dir": "misc/migrations"
      }
    ]
   // "ai": {

@@ -1,14 +1,13 @@
 import { DrizzleD1Database } from "drizzle-orm/d1";
-import { User, usersTable } from "../drizzle/schema";
+import { users } from "../drizzle/schema";
+import { User } from "../../domain/model/user";
 
 export class UserRepository {
   constructor(private readonly db: DrizzleD1Database) {}
   public async insert(user: User) {
-    return this.db.insert(usersTable).values({
-      id: user.id, 
+    return this.db.insert(users).values({
       name: user.name, 
       email: user.email, 
-      age: user.age, 
     })
   }
 }
