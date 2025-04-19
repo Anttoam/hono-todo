@@ -7,8 +7,9 @@ export class UserRepository {
 
 	public async insert(user: NewUser) {
 		return this.db.insert(users).values({
-			name: user.name,
+			username: user.username,
 			email: user.email,
+      password: user.password, 
 		});
 	}
 
@@ -23,8 +24,11 @@ export class UserRepository {
 
 		return {
 			id: row.id,
-			name: row.name,
+			username: row.username,
 			email: row.email,
+			password: row.password,
+      created_at: row.created_at, 
+      updated_at: row.updated_at, 
 		};
 	}
 
@@ -47,8 +51,11 @@ export class UserRepository {
 
 		return {
 			id: row.id,
-			name: row.name,
+			username: row.username,
 			email: row.email,
+			password: row.password,
+      created_at: row.created_at, 
+      updated_at: row.updated_at, 
 		};
 	}
 }
