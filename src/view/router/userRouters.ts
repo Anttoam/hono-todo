@@ -27,11 +27,6 @@ userRoutes.post("/", (c) => {
 	return controller.create(c);
 });
 
-userRoutes.get("/email", (c) => {
-	const controller = c.get("userController");
-	return controller.getUserByEmail(c);
-});
-
 userRoutes.get("/", (c) => {
 	const controller = c.get("userController");
 	return controller.getUsers(c);

@@ -5,11 +5,10 @@ export class UserUsecase {
 
 	public async register(name: string, email: string) {
 		const newUser = { name, email };
+		if (await this.ur.getByEmail(email)) {
+			throw new Error("すでに存在するユーザーです");
+		}
 		return await this.ur.insert(newUser);
-	}
-
-	public async getUserByEmail(email: string) {
-		return await this.ur.getByEmail(email);
 	}
 
 	public async getUsers() {

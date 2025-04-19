@@ -12,14 +12,14 @@ export class UserRepository {
 		});
 	}
 
-	public async getByEmail(email: string): Promise<User> {
+	public async getByEmail(email: string): Promise<User | undefined> {
 		const [row] = await this.db
 			.select()
 			.from(users)
 			.where(eq(users.email, email))
 			.limit(1);
 
-		if (!row) throw new Error("そのメールアドレスは存在しません");
+		if (!row) return undefined;
 
 		return {
 			id: row.id,
