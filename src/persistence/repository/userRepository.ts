@@ -6,7 +6,7 @@ export class UserRepository {
 	constructor(private readonly db: DrizzleD1Database) {}
 
 	public async insert(user: NewUser) {
-		return this.db.insert(users).values({
+		return await this.db.insert(users).values({
 			username: user.username,
 			email: user.email,
 			password: user.password,

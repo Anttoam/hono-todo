@@ -2,23 +2,23 @@ import type { Context } from "hono";
 import type { UserUsecase } from "../../domain/usecase/userUsecase";
 
 export class UserController {
-	constructor(private readonly usecase: UserUsecase) {}
+	constructor(private readonly userUsecase: UserUsecase) {}
 
 	public async create(c: Context) {
-		const { username, email, password } = await c.req.json();
-
-		if (!username || !email || !password)
-			return c.text(
-				"名前またはメールアドレスまたはパスワードが入力されていません",
-				400,
-			);
-
-		const result = await this.usecase.register(username, email, password);
-		return c.json(result);
+		try {
+			const { username, email, password } = await c.req.json();
+			const result = await this.userUsecase.register(username, email, password);
+			return c.json(result);
+		} catch (err) {
+			if (err instanceof Error) {
+				return c.text(err.message, 400);
+			}
+			return c.text("予期しないエラーが発生しました", 500);
+		}
 	}
 
 	public async getUsers(c: Context) {
-		const result = await this.usecase.getUsers();
+		const result = await this.userUsecase.getUsers();
 		return c.json(result);
 	}
 
@@ -28,7 +28,7 @@ export class UserController {
 		const id = Number.parseInt(idParam, 10);
 		if (Number.isNaN(id)) return c.text("IDが不正です", 400);
 
-		const result = await this.usecase.getUserByID(id);
+		const result = await this.userUsecase.getUserByID(id);
 		return c.json(result);
 	}
 }
