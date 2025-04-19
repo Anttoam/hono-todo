@@ -5,10 +5,11 @@ export class UserUsecase {
 	constructor(private readonly ur: UserRepository) {}
 
 	public async register(username: string, email: string, password: string) {
-    const hashPassword = await bcrypt.hash(password, 10)
+		const hashPassword = await bcrypt.hash(password, 10);
 		const newUser = { username, email, password: hashPassword };
 
-    if (await this.ur.getByEmail(email)) throw new Error("すでに存在するユーザーです");
+		if (await this.ur.getByEmail(email))
+			throw new Error("すでに存在するユーザーです");
 
 		return await this.ur.insert(newUser);
 	}

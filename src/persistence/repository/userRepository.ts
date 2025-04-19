@@ -9,7 +9,7 @@ export class UserRepository {
 		return this.db.insert(users).values({
 			username: user.username,
 			email: user.email,
-      password: user.password, 
+			password: user.password,
 		});
 	}
 
@@ -27,8 +27,8 @@ export class UserRepository {
 			username: row.username,
 			email: row.email,
 			password: row.password,
-      created_at: row.created_at, 
-      updated_at: row.updated_at, 
+			created_at: row.created_at,
+			updated_at: row.updated_at,
 		};
 	}
 
@@ -54,8 +54,8 @@ export class UserRepository {
 			username: row.username,
 			email: row.email,
 			password: row.password,
-      created_at: row.created_at, 
-      updated_at: row.updated_at, 
+			created_at: row.created_at,
+			updated_at: row.updated_at,
 		};
 	}
 }

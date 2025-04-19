@@ -8,7 +8,10 @@ export class UserController {
 		const { username, email, password } = await c.req.json();
 
 		if (!username || !email || !password)
-			return c.text("名前またはメールアドレスまたはパスワードが入力されていません", 400);
+			return c.text(
+				"名前またはメールアドレスまたはパスワードが入力されていません",
+				400,
+			);
 
 		const result = await this.usecase.register(username, email, password);
 		return c.json(result);
