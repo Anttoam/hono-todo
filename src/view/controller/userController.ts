@@ -1,7 +1,7 @@
 import type { D1Database } from "@cloudflare/workers-types";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
-import { registerInput } from "../../domain/dto/userDto";
+import { registerForm } from "../../domain/dto/userDto";
 import { UserUsecase } from "../../domain/usecase/userUsecase";
 import { getDb } from "../../persistence/database";
 import { UserRepository } from "../../persistence/repository/userRepository";
@@ -20,7 +20,7 @@ const usecase = (bindings: Env["Bindings"]) => {
 	return new UserUsecase(userRepo);
 };
 
-userRouter.post("/register", zValidator("form", registerInput), async (c) => {
+userRouter.post("/register", zValidator("form", registerForm), async (c) => {
 	const validated = c.req.valid("form");
 	const userUsecase = usecase(c.env);
 	const result = await userUsecase.register(validated);

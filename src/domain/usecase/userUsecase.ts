@@ -3,15 +3,15 @@ import { type Result, err, ok } from "neverthrow";
 import type { z } from "zod";
 import type { User } from "../../persistence/drizzle/schema";
 import type { UserRepository } from "../../persistence/repository/userRepository";
-import { registerInput } from "../dto/userDto";
+import { registerForm } from "../dto/userDto";
 
 export class UserUsecase {
 	constructor(private readonly userRepository: UserRepository) {}
 
 	public async register(
-		input: z.infer<typeof registerInput>,
+		form: z.infer<typeof registerForm>,
 	): Promise<Result<User, Error>> {
-		const parsed = registerInput.safeParse(input);
+		const parsed = registerForm.safeParse(form);
 		if (parsed.error) {
 			const message = parsed.error.errors.map((err) => err.message).join(" / ");
 			return err(new Error(message));
