@@ -1,5 +1,4 @@
 import type { D1Database } from "@cloudflare/workers-types";
-import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { idSchema, registerForm } from "../../domain/dto/userDto";
 import { UserUsecase } from "../../domain/usecase/userUsecase";
@@ -20,13 +19,17 @@ const usecase = (bindings: Env["Bindings"]) => {
 	return new UserUsecase(userRepo);
 };
 
-userRouter.post("/register", zValidator("form", registerForm), async (c) => {
-	const validated = c.req.valid("form");
+userRouter.post("/register", async (c) => {
+	const form = c.req.json();
+	const parsedForm = registerForm.safeParse(form);
+	if (parsedForm.error) {
+		return c.json({ error: "正しい入力ではありません" }, 400);
+	}
 	const userUsecase = usecase(c.env);
-	const result = await userUsecase.register(validated);
+	const result = await userUsecase.register(parsedForm.data);
 
 	if (result.isErr()) {
-		return c.text(result.error.message, 400);
+		return c.json({ error: result.error.message }, 400);
 	}
 
 	return c.json(result.value, 201);
@@ -37,18 +40,23 @@ userRouter.get("/list", async (c) => {
 	const result = await userUsecase.getUsers();
 
 	if (result.isErr()) {
-		return c.text(result.error.message, 400);
+		return c.json({ error: result.error.message }, 400);
 	}
 
 	return c.json(result);
 });
 
-userRouter.get("/:id", zValidator("param", idSchema), async (c) => {
-	const params = c.req.valid("param");
+userRouter.get("/:id", async (c) => {
+	const id = c.req.param("id");
+	const parsed = idSchema.safeParse({ id });
+	if (parsed.error) {
+		return c.json({ error: "正しい入力ではありません" }, 400);
+	}
+
 	const userUsecase = usecase(c.env);
-	const result = await userUsecase.getUserByID(params);
+	const result = await userUsecase.getUserByID(parsed.data);
 	if (result.isErr()) {
-		return c.text(result.error.message, 400);
+		return c.json({ error: result.error.message }, 400);
 	}
 	return c.json(result.value, 200);
 });

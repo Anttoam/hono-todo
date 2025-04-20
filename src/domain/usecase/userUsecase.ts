@@ -41,7 +41,9 @@ export class UserUsecase {
 		return await this.userRepository.getUsers();
 	}
 
-	public async getUserByID(id: z.infer<typeof idSchema>) {
+	public async getUserByID(
+		id: z.infer<typeof idSchema>,
+	): Promise<Result<User, Error>> {
 		const parsed = idSchema.safeParse(id);
 		if (parsed.error) {
 			const message = parsed.error.errors.map((err) => err.message).join(" / ");
