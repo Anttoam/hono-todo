@@ -5,3 +5,7 @@ export const registerForm = z.object({
 	email: z.string().email("有効なメールアドレスではありません"),
 	password: z.string().min(8, "パスワードは8文字以上入力してください"),
 });
+
+export const idSchema = z.object({
+	id: z.coerce.number().int().positive(),
+});

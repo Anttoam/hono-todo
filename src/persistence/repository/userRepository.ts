@@ -22,11 +22,7 @@ export class UserRepository {
 
 			return ok(row);
 		} catch (e) {
-			return err(
-				e instanceof Error
-					? e
-					: new Error(DB_ERRORS.GENERIC_ERROR),
-			);
+			return err(e instanceof Error ? e : new Error(DB_ERRORS.GENERIC_ERROR));
 		}
 	}
 
@@ -42,11 +38,7 @@ export class UserRepository {
 
 			return ok(row);
 		} catch (e) {
-			return err(
-				e instanceof Error
-					? e
-					: new Error(DB_ERRORS.GENERIC_ERROR),
-			);
+			return err(e instanceof Error ? e : new Error(DB_ERRORS.GENERIC_ERROR));
 		}
 	}
 
@@ -55,11 +47,7 @@ export class UserRepository {
 			const result = await this.db.select().from(users);
 			return ok(result);
 		} catch (e) {
-			return err(
-				e instanceof Error
-					? e
-					: new Error(DB_ERRORS.GENERIC_ERROR),
-			);
+			return err(e instanceof Error ? e : new Error(DB_ERRORS.GENERIC_ERROR));
 		}
 	}
 
@@ -75,11 +63,7 @@ export class UserRepository {
 
 			return ok(row);
 		} catch (e) {
-			return err(
-				e instanceof Error
-					? e
-					: new Error(DB_ERRORS.GENERIC_ERROR),
-			);
+			return err(e instanceof Error ? e : new Error(DB_ERRORS.GENERIC_ERROR));
 		}
 	}
 }

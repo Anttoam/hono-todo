@@ -1,7 +1,7 @@
 import type { D1Database } from "@cloudflare/workers-types";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
-import { registerForm } from "../../domain/dto/userDto";
+import { idSchema, registerForm } from "../../domain/dto/userDto";
 import { UserUsecase } from "../../domain/usecase/userUsecase";
 import { getDb } from "../../persistence/database";
 import { UserRepository } from "../../persistence/repository/userRepository";
@@ -43,19 +43,14 @@ userRouter.get("/list", async (c) => {
 	return c.json(result);
 });
 
-userRouter.get("/:id", async (c) => {
-	const idParam = c.req.param("id");
-
-	const id = Number.parseInt(idParam, 10);
-	if (Number.isNaN(id)) return c.text("IDが不正です", 400);
+userRouter.get("/:id", zValidator("param", idSchema), async (c) => {
+	const params = c.req.valid("param");
 	const userUsecase = usecase(c.env);
-
-	const result = await userUsecase.getUserByID(id);
+	const result = await userUsecase.getUserByID(params);
 	if (result.isErr()) {
 		return c.text(result.error.message, 400);
 	}
-
-	return c.json(result);
+	return c.json(result.value, 200);
 });
 
 export default userRouter;
