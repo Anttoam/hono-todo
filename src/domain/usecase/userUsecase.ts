@@ -1,14 +1,16 @@
 import bcrypt from "bcryptjs";
 import { type Result, err, ok } from "neverthrow";
+import type { z } from "zod";
 import type { User } from "../../persistence/drizzle/schema";
 import type { UserRepository } from "../../persistence/repository/userRepository";
 import { registerInput } from "../dto/userDto";
-import { z } from "zod";
 
 export class UserUsecase {
 	constructor(private readonly userRepository: UserRepository) {}
 
-	public async register(input: z.infer<typeof registerInput>): Promise<Result<User, Error>> {
+	public async register(
+		input: z.infer<typeof registerInput>,
+	): Promise<Result<User, Error>> {
 		const parsed = registerInput.safeParse(input);
 		if (parsed.error) {
 			const message = parsed.error.errors.map((err) => err.message).join(" / ");
@@ -16,7 +18,11 @@ export class UserUsecase {
 		}
 
 		const hashPassword = await bcrypt.hash(parsed.data.password, 10);
-		const newUser = { username: parsed.data.username, email: parsed.data.email, password: hashPassword };
+		const newUser = {
+			username: parsed.data.username,
+			email: parsed.data.email,
+			password: hashPassword,
+		};
 
 		const existing = await this.userRepository.getByEmail(newUser.email);
 		if (existing) {
