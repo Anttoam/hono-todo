@@ -1,23 +1,34 @@
 import bcrypt from "bcryptjs";
+import { type Result, err, ok } from "neverthrow";
+import type { User } from "../../persistence/drizzle/schema";
 import type { UserRepository } from "../../persistence/repository/userRepository";
 import { registerInput } from "../dto/userDto";
+import { z } from "zod";
 
 export class UserUsecase {
 	constructor(private readonly userRepository: UserRepository) {}
 
-	public async register(username: string, email: string, password: string) {
-		const clean = registerInput.safeParse({ username, email, password });
-		if (!clean.success) {
-			const message = clean.error.errors.map((err) => err.message).join(" / ");
-			throw new Error(`${message}`);
+	public async register(input: z.infer<typeof registerInput>): Promise<Result<User, Error>> {
+		const parsed = registerInput.safeParse(input);
+		if (parsed.error) {
+			const message = parsed.error.errors.map((err) => err.message).join(" / ");
+			return err(new Error(message));
 		}
-		const hashPassword = await bcrypt.hash(password, 10);
-		const newUser = { username, email, password: hashPassword };
 
-		if (await this.userRepository.getByEmail(email))
-			throw new Error("すでに存在するユーザーです");
+		const hashPassword = await bcrypt.hash(parsed.data.password, 10);
+		const newUser = { username: parsed.data.username, email: parsed.data.email, password: hashPassword };
 
-		return await this.userRepository.insert(newUser);
+		const existing = await this.userRepository.getByEmail(newUser.email);
+		if (existing) {
+			return err(new Error("すでに存在するユーザーです"));
+		}
+
+		const result = await this.userRepository.insert(newUser);
+		if (result.isErr()) {
+			return err(new Error(`登録に失敗しました: ${result.error.message}`));
+		}
+
+		return ok(result.value);
 	}
 
 	public async getUsers() {
