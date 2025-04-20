@@ -34,3 +34,4 @@ lerna-debug.log*
 
 # database
 local.db
+.aider*
