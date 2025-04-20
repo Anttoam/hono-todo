@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
 import { type Result, err, ok } from "neverthrow";
 import { type NewUser, type User, users } from "../drizzle/schema";
+import { DB_ERRORS } from "../errors/dbErros";
 
 export class UserRepository {
 	constructor(private readonly db: DrizzleD1Database) {}
@@ -17,14 +18,14 @@ export class UserRepository {
 				})
 				.returning();
 
-			if (!row) return err(new Error("ユーザーの挿入に失敗しました"));
+			if (!row) return err(new Error(DB_ERRORS.INSERT_FAILED));
 
 			return ok(row);
 		} catch (e) {
 			return err(
 				e instanceof Error
 					? e
-					: new Error("データベース処理中にエラーが発生しました"),
+					: new Error(DB_ERRORS.GENERIC_ERROR),
 			);
 		}
 	}
@@ -37,14 +38,14 @@ export class UserRepository {
 				.where(eq(users.email, email))
 				.limit(1);
 
-			if (!row) return err(new Error("データが存在しません"));
+			if (!row) return err(new Error(DB_ERRORS.NOT_FOUND));
 
 			return ok(row);
 		} catch (e) {
 			return err(
 				e instanceof Error
 					? e
-					: new Error("データベース処理中にエラーが発生しました"),
+					: new Error(DB_ERRORS.GENERIC_ERROR),
 			);
 		}
 	}
@@ -52,14 +53,12 @@ export class UserRepository {
 	public async getUsers(): Promise<Result<User[], Error>> {
 		try {
 			const result = await this.db.select().from(users);
-			if (result.length === 0) return err(new Error("ユーザーが存在しません"));
-
 			return ok(result);
 		} catch (e) {
 			return err(
 				e instanceof Error
 					? e
-					: new Error("データベース処理中にエラーが発生しました"),
+					: new Error(DB_ERRORS.GENERIC_ERROR),
 			);
 		}
 	}
@@ -72,14 +71,14 @@ export class UserRepository {
 				.where(eq(users.id, id))
 				.limit(1);
 
-			if (!row) return err(new Error("ユーザーが存在しません"));
+			if (!row) return err(new Error(DB_ERRORS.NOT_FOUND));
 
 			return ok(row);
 		} catch (e) {
 			return err(
 				e instanceof Error
 					? e
-					: new Error("データベース処理中にエラーが発生しました"),
+					: new Error(DB_ERRORS.GENERIC_ERROR),
 			);
 		}
 	}
