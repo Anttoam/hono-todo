@@ -5,6 +5,7 @@
     "deploy": "wrangler deploy --minify"
   },
   "dependencies": {
+    "@hono/zod-validator": "^0.4.3",
     "@types/bcryptjs": "^3.0.0",
     "bcryptjs": "^3.0.2",
     "dotenv": "^16.5.0",
