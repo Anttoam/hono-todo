@@ -1,34 +1,52 @@
-import type { Context } from "hono";
-import type { UserUsecase } from "../../domain/usecase/userUsecase";
+import type { D1Database } from "@cloudflare/workers-types";
+import { zValidator } from "@hono/zod-validator";
+import { Hono } from "hono";
+import { registerInput } from "../../domain/dto/userDto";
+import { UserUsecase } from "../../domain/usecase/userUsecase";
+import { getDb } from "../../persistence/database";
+import { UserRepository } from "../../persistence/repository/userRepository";
 
-export class UserController {
-	constructor(private readonly userUsecase: UserUsecase) {}
+type Env = {
+	Bindings: {
+		DB: D1Database;
+	};
+};
 
-	public async create(c: Context) {
-		try {
-			const { username, email, password } = await c.req.json();
-			const result = await this.userUsecase.register(username, email, password);
-			return c.json(result);
-		} catch (err) {
-			if (err instanceof Error) {
-				return c.text(err.message, 400);
-			}
-			return c.text("予期しないエラーが発生しました", 500);
-		}
+const userRouter = new Hono<Env>();
+
+const usecase = (bindings: Env["Bindings"]) => {
+	const db = getDb(bindings);
+	const userRepo = new UserRepository(db);
+	return new UserUsecase(userRepo);
+};
+
+userRouter.post("/register", zValidator("form", registerInput), async (c) => {
+	const validated = c.req.valid("form");
+	const userUsecase = usecase(c.env);
+	const result = await userUsecase.register(validated);
+
+	if (result.isErr()) {
+		return c.text(result.error.message, 400);
 	}
 
-	public async getUsers(c: Context) {
-		const result = await this.userUsecase.getUsers();
-		return c.json(result);
-	}
+	return c.json(result.value, 201);
+});
 
-	public async getUserByID(c: Context) {
-		const idParam = c.req.param("id");
+userRouter.get("/list", async (c) => {
+	const userUsecase = usecase(c.env);
+	const result = await userUsecase.getUsers();
+	return c.json(result);
+});
 
-		const id = Number.parseInt(idParam, 10);
-		if (Number.isNaN(id)) return c.text("IDが不正です", 400);
+userRouter.get("/:id", async (c) => {
+	const idParam = c.req.param("id");
 
-		const result = await this.userUsecase.getUserByID(id);
-		return c.json(result);
-	}
-}
+	const id = Number.parseInt(idParam, 10);
+	if (Number.isNaN(id)) return c.text("IDが不正です", 400);
+	const userUsecase = usecase(c.env);
+
+	const result = await userUsecase.getUserByID(id);
+	return c.json(result);
+});
+
+export default userRouter;

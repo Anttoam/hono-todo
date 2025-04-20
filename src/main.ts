@@ -1,12 +1,8 @@
 import { Hono } from "hono";
-import userRoutes from "./view/router/userRouters";
+import userRouter from "./view/controller/userController";
 
 const app = new Hono();
 
-app.get("/", (c) => {
-	return c.text("Hello Hono!");
-});
-
-app.route("/users", userRoutes);
+app.route("/users", userRouter);
 
 export default app;
