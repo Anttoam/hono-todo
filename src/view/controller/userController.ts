@@ -35,6 +35,11 @@ userRouter.post("/register", zValidator("form", registerForm), async (c) => {
 userRouter.get("/list", async (c) => {
 	const userUsecase = usecase(c.env);
 	const result = await userUsecase.getUsers();
+
+	if (result.isErr()) {
+		return c.text(result.error.message, 400);
+	}
+
 	return c.json(result);
 });
 
@@ -46,6 +51,10 @@ userRouter.get("/:id", async (c) => {
 	const userUsecase = usecase(c.env);
 
 	const result = await userUsecase.getUserByID(id);
+	if (result.isErr()) {
+		return c.text(result.error.message, 400);
+	}
+
 	return c.json(result);
 });
 

@@ -25,7 +25,7 @@ export class UserUsecase {
 		};
 
 		const existing = await this.userRepository.getByEmail(newUser.email);
-		if (existing) {
+		if (existing.isOk()) {
 			return err(new Error("すでに存在するユーザーです"));
 		}
 
@@ -37,7 +37,7 @@ export class UserUsecase {
 		return ok(result.value);
 	}
 
-	public async getUsers() {
+	public async getUsers(): Promise<Result<User[], Error>> {
 		return await this.userRepository.getUsers();
 	}
 
