@@ -67,15 +67,18 @@ export class UserRepository {
 		}
 	}
 
-  public async delete(id: number): Promise<Result<boolean, Error>> {
-    try {
-      const result = await this.db.delete(users).where(eq(users.id, id)).returning();
-      if (!result) {
-        return err(new Error(DB_ERRORS.NOT_FOUND))
-      }
-      return ok(true)
-    } catch (e) {
-      return err(e instanceof Error ? e : new Error(DB_ERRORS.GENERIC_ERROR))
-    }
-  }
+	public async delete(id: number): Promise<Result<boolean, Error>> {
+		try {
+			const result = await this.db
+				.delete(users)
+				.where(eq(users.id, id))
+				.returning();
+			if (!result) {
+				return err(new Error(DB_ERRORS.NOT_FOUND));
+			}
+			return ok(true);
+		} catch (e) {
+			return err(e instanceof Error ? e : new Error(DB_ERRORS.GENERIC_ERROR));
+		}
+	}
 }
