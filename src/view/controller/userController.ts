@@ -20,7 +20,7 @@ const usecase = (bindings: Env["Bindings"]) => {
 };
 
 userRouter.post("/register", async (c) => {
-	const form = c.req.json();
+	const form = await c.req.json();
 	const parsedForm = registerForm.safeParse(form);
 	if (parsedForm.error) {
 		return c.json({ error: "正しい入力ではありません" }, 400);
@@ -59,6 +59,21 @@ userRouter.get("/:id", async (c) => {
 		return c.json({ error: result.error.message }, 400);
 	}
 	return c.json(result.value, 200);
+});
+
+userRouter.delete("/:id", async (c) => {
+	const id = c.req.param("id");
+	const parsed = idSchema.safeParse({ id });
+	if (parsed.error) {
+		return c.json({ error: "正しい入力ではありません" }, 400);
+	}
+
+	const userUsecase = usecase(c.env);
+	const result = await userUsecase.delete(parsed.data);
+	if (result.isErr()) {
+		return c.json({ error: result.error.message }, 400);
+	}
+	return c.json(result.isOk, 200);
 });
 
 export default userRouter;

@@ -56,4 +56,18 @@ export class UserUsecase {
 		}
 		return ok(result.value);
 	}
+
+  public async delete(id: z.infer<typeof idSchema>): Promise<Result<boolean, Error>> {
+    const parsed = idSchema.safeParse(id);
+    if (parsed.error) {
+			const message = parsed.error.errors.map((err) => err.message).join(" / ");
+			return err(new Error(message));
+    }
+
+    const result = await this.userRepository.delete(parsed.data.id);
+    if (result.isErr()) {
+			return err(new Error(`${result.error.message}`));
+    }
+    return ok(true)
+  }
 }
