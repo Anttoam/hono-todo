@@ -3,7 +3,7 @@ import { type Result, err, ok } from "neverthrow";
 import type { z } from "zod";
 import type { User } from "../../persistence/drizzle/schema";
 import type { UserRepository } from "../../persistence/repository/userRepository";
-import { idSchema, registerForm } from "../dto/userDto";
+import { editForm, idSchema, registerForm } from "../dto/userDto";
 
 export class UserUsecase {
 	constructor(private readonly userRepository: UserRepository) {}
@@ -71,5 +71,36 @@ export class UserUsecase {
 			return err(new Error(`${result.error.message}`));
 		}
 		return ok(true);
+	}
+
+	public async edit(
+		id: z.infer<typeof idSchema>,
+		form: z.infer<typeof editForm>,
+	): Promise<Result<User, Error>> {
+		const parsedID = idSchema.safeParse(id);
+		if (parsedID.error) {
+			const message = parsedID.error.errors
+				.map((err) => err.message)
+				.join(" / ");
+			return err(new Error(message));
+		}
+		const parsedForm = editForm.safeParse(form);
+		if (parsedForm.error) {
+			const message = parsedForm.error.errors
+				.map((err) => err.message)
+				.join(" / ");
+			return err(new Error(message));
+		}
+
+		const editUser = {
+			username: parsedForm.data.username,
+			email: parsedForm.data.email,
+		};
+
+		const result = await this.userRepository.update(parsedID.data.id, editUser);
+		if (result.isErr()) {
+			return err(new Error(`${result.error.message}`));
+		}
+		return ok(result.value);
 	}
 }

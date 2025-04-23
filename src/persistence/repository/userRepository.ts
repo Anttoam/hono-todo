@@ -81,4 +81,26 @@ export class UserRepository {
 			return err(e instanceof Error ? e : new Error(DB_ERRORS.GENERIC_ERROR));
 		}
 	}
+
+	public async update(
+		id: number,
+		user: Partial<NewUser>,
+	): Promise<Result<User, Error>> {
+		try {
+			const [result] = await this.db
+				.update(users)
+				.set({
+					username: user.username,
+					email: user.email,
+					updated_at: new Date().toString(),
+				})
+				.where(eq(users.id, id))
+				.returning();
+
+			return ok(result);
+		} catch (e) {
+			console.error(e);
+			return err(e instanceof Error ? e : new Error(DB_ERRORS.GENERIC_ERROR));
+		}
+	}
 }
