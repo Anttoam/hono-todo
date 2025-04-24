@@ -4,6 +4,7 @@ import type { z } from "zod";
 import type { User } from "../../persistence/drizzle/schema";
 import type { UserRepository } from "../../persistence/repository/userRepository";
 import { editForm, idSchema, registerForm } from "../dto/userDto";
+import { USECASE_ERRORS } from "../errors/usecaseError";
 
 export class UserUsecase {
 	constructor(private readonly userRepository: UserRepository) {}
@@ -46,8 +47,7 @@ export class UserUsecase {
 	): Promise<Result<User, Error>> {
 		const parsed = idSchema.safeParse(id);
 		if (parsed.error) {
-			const message = parsed.error.errors.map((err) => err.message).join(" / ");
-			return err(new Error(message));
+			return err(new Error(USECASE_ERRORS.INVALID_ID_ERROR));
 		}
 
 		const result = await this.userRepository.getById(parsed.data.id);
@@ -62,8 +62,7 @@ export class UserUsecase {
 	): Promise<Result<boolean, Error>> {
 		const parsed = idSchema.safeParse(id);
 		if (parsed.error) {
-			const message = parsed.error.errors.map((err) => err.message).join(" / ");
-			return err(new Error(message));
+			return err(new Error(USECASE_ERRORS.INVALID_ID_ERROR));
 		}
 
 		const result = await this.userRepository.delete(parsed.data.id);
@@ -79,10 +78,7 @@ export class UserUsecase {
 	): Promise<Result<User, Error>> {
 		const parsedID = idSchema.safeParse(id);
 		if (parsedID.error) {
-			const message = parsedID.error.errors
-				.map((err) => err.message)
-				.join(" / ");
-			return err(new Error(message));
+			return err(new Error(USECASE_ERRORS.INVALID_ID_ERROR));
 		}
 		const parsedForm = editForm.safeParse(form);
 		if (parsedForm.error) {
