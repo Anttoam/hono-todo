@@ -1,25 +1,19 @@
 {
   "name": "hono-todo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy --minify"
-  },
-  "dependencies": {
-    "@types/bcryptjs": "^3.0.0",
-    "bcryptjs": "^3.0.2",
-    "dotenv": "^16.5.0",
-    "drizzle-orm": "^0.42.0",
-    "hono": "^4.7.7",
-    "neverthrow": "^8.2.0",
-    "zod": "^3.24.3"
-  },
+    "check:all": "pnpm biome check --write apps/frontend/src apps/backend/src", 
+    "backend": "pnpm -F \"backend\" run dev", 
+    "frontend": "pnpm -F \"frontend\" run dev"
+  }, 
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@cloudflare/workers-types": "^4.20250214.0",
-    "@types/bun": "^1.2.9",
-    "@types/node": "^22.14.1",
-    "drizzle-kit": "^0.31.0",
-    "tsx": "^4.19.3",
-    "wrangler": "^4.4.0"
+    "typescript": "5.8.3", 
+    "lefthook": "1.11.11"
   }
 }
