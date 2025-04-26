@@ -1,8 +1,4 @@
-```
-bun i
-bun run dev
-```
-
-```
-bun run deploy
+```bash
+docker compose build
+docker compose up -d
 ```
