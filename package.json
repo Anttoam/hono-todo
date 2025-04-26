@@ -6,7 +6,8 @@
   "scripts": {
     "check:all": "pnpm biome check --write apps/frontend/src apps/backend/src", 
     "backend": "pnpm -F \"backend\" run dev", 
-    "frontend": "pnpm -F \"frontend\" run dev"
+    "frontend": "pnpm -F \"frontend\" run dev", 
+    "front:build": "pnpm -F \"frontend\" run build"
   }, 
   "keywords": [],
   "author": "",
